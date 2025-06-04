@@ -9,6 +9,7 @@ import CurrentMetaphor from './components/CurrentMetaphor';
 import Tabs from './components/Tabs';
 import ShareHandler from './components/ShareHandler';
 import FloatingButton from './components/FloatingButton';
+import BookmarkletHelper from './components/BookmarkletHelper';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <GenerateButton />
         </div>
         
+        <BookmarkletHelper />
         <CurrentMetaphor />
         
         <Tabs />
