@@ -1,6 +1,16 @@
 import OpenAI from 'openai';
 import { Tone, Metaphor } from '../types';
 
+const validateApiKey = () => {
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('OpenAI API key is not configured. Please add your API key to the .env file.');
+  }
+  if (!apiKey.startsWith('sk-')) {
+    throw new Error('Invalid OpenAI API key format. API keys should start with "sk-"');
+  }
+};
+
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true // Only for hackathon demo
@@ -22,9 +32,8 @@ export const generateMetaphor = async (input: string, tone: Tone): Promise<Metap
     throw new Error('Please enter some text to generate a metaphor');
   }
 
-  if (!import.meta.env.VITE_OPENAI_API_KEY) {
-    throw new Error('OpenAI API key not configured');
-  }
+  // Validate API key before making the request
+  validateApiKey();
 
   try {
     const response = await openai.chat.completions.create({
@@ -57,6 +66,12 @@ export const generateMetaphor = async (input: string, tone: Tone): Promise<Metap
       isFavorite: false
     };
   } catch (error) {
+    if (error instanceof Error) {
+      // Check for specific API key related errors
+      if (error.message.includes('API key')) {
+        throw new Error('Invalid OpenAI API key. Please check your API key in the .env file.');
+      }
+    }
     console.error('OpenAI API error:', error);
     throw new Error('Failed to generate metaphor. Please try again.');
   }
