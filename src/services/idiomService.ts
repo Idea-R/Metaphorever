@@ -20,12 +20,17 @@ export const analyzePhrase = async (phrase: string): Promise<IdiomAnalysisResult
       messages: [
         {
           role: "system",
-          content: `You are METASENSE, an expert in idioms and figurative language. Analyze the given phrase and return a JSON object with these properties:
+          content: `You are METASENSE, an expert in idioms, figurative language, and global cultural expressions. Analyze the given phrase and return a JSON object with:
             - phrase: the analyzed phrase
             - isIdiom: boolean indicating if the phrase contains an idiom
             - meaning: explanation of the idiom's meaning (if applicable)
             - origin: brief history of the idiom (if applicable)
-            - alternatives: array of modern alternatives or similar expressions`
+            - alternatives: array of modern alternatives or similar expressions
+            - culturalVariations: array of objects containing:
+              * culture: name of the culture/region
+              * expression: equivalent expression in that culture
+              * literalTranslation: literal English translation (if applicable)
+              * context: cultural context and usage notes`
         },
         {
           role: "user",
@@ -37,7 +42,7 @@ export const analyzePhrase = async (phrase: string): Promise<IdiomAnalysisResult
 
     const result = {
       ...JSON.parse(response.choices[0].message.content || '{}'),
-      phrase // Ensure the phrase is included in the result
+      phrase
     };
 
     // Cache the result

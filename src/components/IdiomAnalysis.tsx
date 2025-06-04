@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Lightbulb, History, Sparkles, Globe2 } from 'lucide-react';
+import { BookOpen, Lightbulb, History, Sparkles, Globe2, Map } from 'lucide-react';
 import { IdiomAnalysisResult } from '../types';
 import LanguageSelector from './LanguageSelector';
 
@@ -75,6 +75,33 @@ const IdiomAnalysis: React.FC<IdiomAnalysisProps> = ({ analysis, onClose, onRequ
                       <li key={index} className="text-gray-700">• {alt}</li>
                     ))}
                   </ul>
+                </div>
+              </div>
+            )}
+
+            {analysis.culturalVariations && analysis.culturalVariations.length > 0 && (
+              <div className="flex gap-3">
+                <Map className="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-medium text-gray-900 mb-1">Around the World</h3>
+                  <div className="space-y-4">
+                    {analysis.culturalVariations.map((variation, index) => (
+                      <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                        <div className="font-medium text-purple-700 mb-1">
+                          {variation.culture}
+                        </div>
+                        <div className="text-gray-800 mb-1">{variation.expression}</div>
+                        <div className="text-sm text-gray-600">
+                          <div>{variation.literalTranslation && (
+                            <span className="italic block mb-1">
+                              Literal: {variation.literalTranslation}
+                            </span>
+                          )}</div>
+                          {variation.context}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

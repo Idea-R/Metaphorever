@@ -21,6 +21,12 @@ export interface IdiomAnalysisResult {
   meaning?: string;
   origin?: string;
   alternatives?: string[];
+  culturalVariations?: {
+    culture: string;
+    expression: string;
+    literalTranslation?: string;
+    context: string;
+  }[];
   translations?: {
     language: string;
     translation: string;
