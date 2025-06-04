@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Metaphor, Tone, IdiomAnalysisResult } from '../types';
 import { generateMetaphor } from '../services/openaiService';
-import { analyzePhrase } from '../services/idiomService';
+import { analyzePhrase, getTranslations } from '../services/idiomService';
 import { 
   getFavorites, 
   getHistory, 
@@ -26,6 +26,7 @@ interface MetaphorContextType {
   analyzeIdioms: (text: string) => Promise<void>;
   idiomAnalysis: IdiomAnalysisResult | null;
   closeIdiomAnalysis: () => void;
+  requestTranslations: (languages: string[]) => Promise<void>;
 }
 
 const MetaphorContext = createContext<MetaphorContextType | undefined>(undefined);
@@ -95,6 +96,17 @@ export const MetaphorProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
+  const requestTranslations = async (languages: string[]): Promise<void> => {
+    if (!idiomAnalysis) return;
+
+    try {
+      const translations = await getTranslations(idiomAnalysis.phrase, languages);
+      setIdiomAnalysis(prev => prev ? { ...prev, translations } : null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get translations');
+    }
+  };
+
   const closeIdiomAnalysis = () => {
     setIdiomAnalysis(null);
   };
@@ -114,7 +126,8 @@ export const MetaphorProvider: React.FC<{ children: ReactNode }> = ({ children }
     copyToClipboard,
     analyzeIdioms,
     idiomAnalysis,
-    closeIdiomAnalysis
+    closeIdiomAnalysis,
+    requestTranslations
   };
 
   return (
@@ -123,7 +136,8 @@ export const MetaphorProvider: React.FC<{ children: ReactNode }> = ({ children }
       {idiomAnalysis && (
         <IdiomAnalysis 
           analysis={idiomAnalysis} 
-          onClose={closeIdiomAnalysis} 
+          onClose={closeIdiomAnalysis}
+          onRequestTranslations={requestTranslations}
         />
       )}
     </MetaphorContext.Provider>
