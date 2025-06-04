@@ -121,3 +121,5 @@ const IdiomAnalysis: React.FC<IdiomAnalysisProps> = ({ analysis, onClose, onRequ
 };
 
 export default IdiomAnalysis;
+
+export { IdiomAnalysis }
