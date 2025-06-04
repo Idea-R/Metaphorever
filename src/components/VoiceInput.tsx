@@ -16,24 +16,28 @@ const VoiceInput: React.FC = () => {
   
   const { setInput, generateNewMetaphor } = useMetaphor();
   const [showPreview, setShowPreview] = useState(false);
+  const [processingTranscript, setProcessingTranscript] = useState(false);
   
   useEffect(() => {
-    if (transcript) {
+    if (transcript && !processingTranscript) {
       setInput(transcript);
       setShowPreview(true);
     }
-  }, [transcript, setInput]);
+  }, [transcript, setInput, processingTranscript]);
   
   useEffect(() => {
     let timer: number;
-    if (!isListening && transcript) {
-      timer = window.setTimeout(() => {
-        generateNewMetaphor();
+    if (!isListening && transcript && !processingTranscript) {
+      setProcessingTranscript(true);
+      timer = window.setTimeout(async () => {
+        await generateNewMetaphor();
         setShowPreview(false);
+        setProcessingTranscript(false);
+        resetTranscript();
       }, 1500);
     }
     return () => clearTimeout(timer);
-  }, [isListening, transcript, generateNewMetaphor]);
+  }, [isListening, transcript, generateNewMetaphor, resetTranscript, processingTranscript]);
   
   const toggleListening = () => {
     if (isListening) {
@@ -41,6 +45,7 @@ const VoiceInput: React.FC = () => {
     } else {
       resetTranscript();
       setShowPreview(false);
+      setProcessingTranscript(false);
       startListening();
     }
   };

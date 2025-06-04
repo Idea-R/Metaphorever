@@ -57,20 +57,27 @@ export const getTranslations = async (phrase: string, languages: string[]): Prom
       messages: [
         {
           role: "system",
-          content: `You are a language expert. For the given phrase, provide translations and cultural context for the specified languages. Return a JSON array with objects containing:
-            - language: the target language
-            - translation: the translated phrase
-            - explanation: brief cultural context or notes about the translation`
+          content: `You are a master translator and cultural expert. For the given phrase or idiom, provide accurate translations and cultural context for each requested language. For each translation:
+          1. Maintain the meaning and spirit of the original
+          2. If it's an idiom, provide the closest equivalent idiom in the target language
+          3. Include cultural context or usage notes
+          4. Ensure the translation is grammatically correct and natural-sounding
+          
+          Return a JSON object with a 'translations' array containing objects with:
+          - language: the target language name
+          - translation: the translated text
+          - explanation: cultural context and usage notes`
         },
         {
           role: "user",
-          content: `Translate this phrase: "${phrase}" into: ${languages.join(', ')}`
+          content: `Translate this phrase: "${phrase}" into these languages: ${languages.join(', ')}`
         }
       ],
       response_format: { type: "json_object" }
     });
 
-    return JSON.parse(response.choices[0].message.content || '[]').translations;
+    const result = JSON.parse(response.choices[0].message.content || '{}');
+    return result.translations || [];
   } catch (error) {
     console.error('Translation API error:', error);
     throw new Error('Failed to translate phrase. Please try again.');
