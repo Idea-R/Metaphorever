@@ -9,10 +9,14 @@ const validateApiKey = () => {
   if (!apiKey.startsWith('sk-')) {
     throw new Error('Invalid OpenAI API key format. API keys should start with "sk-"');
   }
+  return apiKey;
 };
 
+// Validate API key before creating the client
+const apiKey = validateApiKey();
+
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  apiKey,
   dangerouslyAllowBrowser: true // Only for hackathon demo
 });
 
@@ -31,9 +35,6 @@ export const generateMetaphor = async (input: string, tone: Tone): Promise<Metap
   if (!input.trim()) {
     throw new Error('Please enter some text to generate a metaphor');
   }
-
-  // Validate API key before making the request
-  validateApiKey();
 
   try {
     const response = await openai.chat.completions.create({
