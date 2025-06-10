@@ -16,7 +16,7 @@ export const analyzePhrase = async (phrase: string): Promise<IdiomAnalysisResult
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -58,7 +58,7 @@ export const analyzePhrase = async (phrase: string): Promise<IdiomAnalysisResult
 export const getTranslations = async (phrase: string, languages: string[]): Promise<IdiomAnalysisResult['translations']> => {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
