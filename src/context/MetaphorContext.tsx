@@ -151,3 +151,5 @@ export const useMetaphor = (): MetaphorContextType => {
   }
   return context;
 };
+
+export { MetaphorProvider }
